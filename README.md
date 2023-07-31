@@ -12,4 +12,4 @@ Team Participants:
 
 
 #Description 
-Minesweeper game
+Mark all the flags.
