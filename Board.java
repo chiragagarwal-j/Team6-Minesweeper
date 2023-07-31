@@ -19,6 +19,25 @@ public class Board {
 	}
 	
 	
+	
+	
+	
+	public int[][] getFlagArray(){
+		return flagArray;
+	}
+	
+	public boolean[][] getMineArray(){
+		return mineArray;
+	}
+	
+	public int getSize() {
+		return size;
+	}
+	
+	
+	
+	
+	
 	public void generateRandomMines() {
 		// Generating 20 Random Mines
 		Random r = new Random();
@@ -41,6 +60,7 @@ public class Board {
 		flagArray[row][col] = 1;
 		return !mineArray[row][col];
 	}
+	
 	
 	
 	
