@@ -1,10 +1,15 @@
 # Team6-MINESWEEPER
+
 Team Participants:
 
-Chirag Agarwal
+1. Chirag Agarwal
 
-Bhawana Mahato 
+2. Bhawana Mahato 
 
-Ankan Mahapatra
+3. Ankan Mahapatra
 
-Bibhu Sunder Pattanaik
+4. Bibhu Sunder Pattanaik
+
+
+#Description 
+Minesweeper game
