@@ -1,8 +1,14 @@
 # Team6-MINESWEEPER
-Chirag Agarwal
 
-Bhawana Mahato 
+Team Members:
+1. Chirag Agarwal
 
-Ankan Mahapatra
+2. Bhawana Mahato 
 
-Bibhu Sunder Pattanaik
+3. Ankan Mahapatra
+
+4. Bibhu Sunder Pattanaik
+
+
+### Game Description:
+Mark all the hidden mines.
