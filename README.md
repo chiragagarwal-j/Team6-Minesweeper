@@ -1,4 +1,4 @@
-# Team6-Minesweeper
+# Team6-MINESWEEPER
 Chirag Agarwal
 
 Bhawana Mahato
