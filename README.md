@@ -1,4 +1,6 @@
 # Team6-MINESWEEPER
+Team Participants:
+
 Chirag Agarwal
 
 Bhawana Mahato 
