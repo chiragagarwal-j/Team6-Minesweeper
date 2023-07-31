@@ -42,4 +42,8 @@ public class Board {
 		return !mineArray[row][col];
 	}
 	
+	
+	
+	
 }
+
