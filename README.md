@@ -1,7 +1,8 @@
 # Team6-MINESWEEPER
 Chirag Agarwal
 
-Bhawana Mahato
+Bhawana Mahato 
 
 Ankan Mahapatra
 
+Bibhu Sunder Pattanaik
