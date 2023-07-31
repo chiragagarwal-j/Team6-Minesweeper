@@ -4,18 +4,15 @@ import java.util.*;
 
 public class Board {
 	
-	public final int size;  
-	private boolean[][] mineArray;  // true = Mine, false = "No Mine"
-	private int[][] flagArray;      // 0 = closed, 1 = open, -1 = flagged
+	public final int size = 10;  
+	private int[][] mineArray = new int[10][10];  // 1 = Mine, 0 = "No Mine"
+	private int[][] flagArray = new int[10][10];      // 0 = closed, 1 = open, -1 = flagged
 	
-	private boolean isFirstMove = true;    // Initially first move is set to true
+	private boolean isFirstMove;    // Initially first move is set to true
 	
-	public Board(int size) {
-		this.size = size;
-		mineArray = new boolean[size][size];
-		flagArray = new int[size][size];
-		Arrays.fill(mineArray, false);
-		Arrays.fill(flagArray, 0);
+	public Board() {
+		
+		isFirstMove = true;
 	}
 	
 	
@@ -26,7 +23,7 @@ public class Board {
 		return flagArray;
 	}
 	
-	public boolean[][] getMineArray(){
+	public int[][] getMineArray(){
 		return mineArray;
 	}
 	
@@ -39,13 +36,13 @@ public class Board {
 	
 	
 	public void generateRandomMines() {
-		// Generating 20 Random Mines
+		// Generating 30 Random Mines
 		Random r = new Random();
-		for(int i = 0; i < 20; i++) {
+		for(int i = 0; i < 30; i++) {
 			int num = r.nextInt(0,size * size);
 			int row = num / size;
 			int col = num % size;
-			mineArray[row][col] = true;
+			mineArray[row][col] = 1;
 		}
 	}
 	
@@ -53,17 +50,33 @@ public class Board {
 		if(isFirstMove) {
 			isFirstMove = false;
 			generateRandomMines();
-			mineArray[row][col] = false;
+			mineArray[row][col] = 0;
 			return true;
 		}
 		
 		flagArray[row][col] = 1;
-		return !mineArray[row][col];
+		return mineArray[row][col] == 0;
 	}
 	
 	
 	
+	@Override
+	public String toString() {
+		String result = "";
+		for(int i = 0; i < size; i++) {
+			for(int j = 0; j < size; j++) {
+				if(mineArray[i][j] == 0) {
+					result += "0 ";
+				}
+				else {
+					result += "1 ";
+				}
+			}
+			result += "\n";
+		}
+		return result;
+	}
+	
 	
 	
 }
-
