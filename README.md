@@ -4,14 +4,9 @@ Team Participants:
 
 1. Chirag Agarwal
 
-2. Bhawana Mahato 
+2. Ankan Mahapatra
 
-3. Ankan Mahapatra
-
-4. Bibhu Sunder Pattanaik
-
-
-
+3. Bibhu Sunder Pattanaik
 
 
 MINESWEEPER
