@@ -1,4 +1,4 @@
-package mineSweeper;
+
 import java.util.*;
 
 import javafx.application.Application;  
@@ -6,11 +6,14 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;  
 import javafx.scene.Scene;  
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.effect.ImageInput;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;  
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.scene.paint.Color; 
 import javafx.scene.Group;
@@ -22,8 +25,12 @@ public class Tester extends Application {
     private List<List<Rectangle>> cells;
     private Board board;
     private Group group = new Group();
-
+    
+    int noOfMines=15;
     int totalNoOfFlags = 15;
+
+    Button openButton = new Button();
+    Button flagButton = new Button();
 
     public void updateCellView(){
         for(int row = 0; row < 10; row++){
@@ -55,11 +62,26 @@ public class Tester extends Application {
         }
         if(board.isGameOver){
             System.out.println("Game Over");
-            // TODO
+            Text gameOverText = new Text();
+            gameOverText.setText("GAME OVER!");
+            gameOverText.setX(95);
+            gameOverText.setY(332);
+            gameOverText.setFill(Color.RED);
+            gameOverText.setFont(Font.font("Times New Roman",FontWeight.BOLD,60));
+           
+            group.getChildren().add(gameOverText);
             return;
         }
         if(board.minesCount + board.getOpenCellCount() == 100){
             System.out.println("You Win!");
+            Text youWinText = new Text();
+            youWinText.setText("YOU WIN!!!");
+            youWinText.setX(115);
+            youWinText.setY(332);
+            youWinText.setFill(Color.BLACK);
+            youWinText.setFont(Font.font("Times New Roman",FontWeight.BOLD,60));
+           
+            group.getChildren().add(youWinText);
         }
     }
 
@@ -83,13 +105,15 @@ public class Tester extends Application {
         }
     }
 
-    public Group getGroup(){
+    public Group getGroup(int noOfMines){
         
         group.getChildren().clear();
-
+        flagButton.setStyle(null);
+        openButton.setStyle("-fx-background-color: red;" + 
+                                            "-fx-text-fill: white");
         board = new Board();
         cells = new ArrayList<>();
-
+        board.noOfMines = noOfMines;
         for(int row = 0; row < 10; row++){
             List<Rectangle> rectRow = new ArrayList<>();
             for(int col = 0; col < 10; col++){
@@ -132,15 +156,17 @@ public class Tester extends Application {
     }
 
     public Button flagMode(){
-        Button flagButton = new Button();
         flagButton.setText(" FLAG MODE");
         flagButton.setMaxWidth(150);
         flagButton.setMaxHeight(30);
         flagButton.setTranslateX(140);
-        flagButton.setTranslateY(60);
+        flagButton.setTranslateY(610);
         flagButton.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent e) {
+                flagButton.setStyle("-fx-background-color: red;" + 
+                                            "-fx-text-fill: white");
+                openButton.setStyle(null);
                 if(board.isFlagMode == false){
                     board.isFlagMode = true;
                 }
@@ -150,15 +176,18 @@ public class Tester extends Application {
     }
 
     public Button openMode(){
-        Button openButton = new Button();
         openButton.setText(" OPEN MODE");
-        openButton.setMaxWidth(150);
-        openButton.setMaxHeight(30);
+        openButton.setMaxWidth(180);
+        openButton.setMaxHeight(40);
         openButton.setTranslateX(350);
-        openButton.setTranslateY(60);
+        openButton.setTranslateY(610);
+        
         openButton.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
                     @Override
                     public void handle(MouseEvent e) {
+                        openButton.setStyle("-fx-background-color: red;" + 
+                                            "-fx-text-fill: white");
+                        flagButton.setStyle(null);
                         if(board.isFlagMode == true){
                             board.isFlagMode = false;
                             //board.isOpenMode = true;
@@ -173,7 +202,7 @@ public class Tester extends Application {
         return openButton;
     }
 
-    public Button Reset(){
+    public void reset(){
         Button resetButton = new Button();
         resetButton.setText("RESET");
         resetButton.setMaxWidth(150);
@@ -183,20 +212,49 @@ public class Tester extends Application {
         resetButton.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent e) {
-                getGroup();
+                getGroup(noOfMines);
                 Button flagButton = flagMode();
                 group.getChildren().add(flagButton);
                 Button openButton = openMode();
                 group.getChildren().add(openButton);
-                Button resetButton = Reset();
-                group.getChildren().add(resetButton);
+
+               // setDifficulty();
+                reset();
+                
             }
         });
-        return resetButton;
+        group.getChildren().add(resetButton);
+    }
+
+    public void setDifficulty(){
+         ComboBox<String> difficulty = new ComboBox<>();
+         difficulty.getItems().addAll("Easy", "Medium", "Hard");
+         difficulty.setValue("Difficulty");
+         difficulty.setMaxHeight(30);
+         difficulty.setMaxWidth(140);
+         difficulty.setTranslateX(40);
+         difficulty.setTranslateY(50);
+         difficulty.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent e) {
+               switch(difficulty.getValue()){
+               case  "Easy":board.noOfMines = 15;
+                            getGroup(noOfMines);
+                            break;
+                case  "Medium":board.noOfMines = 20;
+                            getGroup(noOfMines);
+                            break;
+                case  "Hard":board.noOfMines = 25;
+                            getGroup(noOfMines);
+                            break;
+               }
+            }
+        });
+        group.getChildren().add(difficulty);
     }
 
     public void start(Stage primaryStage) {
-        getGroup();
+        getGroup(noOfMines);
 
         Button flagButton = flagMode();
         group.getChildren().add(flagButton);
@@ -204,8 +262,11 @@ public class Tester extends Application {
         Button openButton = openMode();
         group.getChildren().add(openButton);
 
-        Button resetButton = Reset();
-        group.getChildren().add(resetButton);
+        reset();
+        
+
+       // setDifficulty();
+         
 
         Scene scene = new Scene(group,580,650);
         scene.setFill(Color.AQUA);
