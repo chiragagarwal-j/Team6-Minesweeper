@@ -1,8 +1,8 @@
-
+package mineSweeper;
 import java.util.*;
 
 import javafx.application.Application;  
-import javafx.event.ActionEvent;  
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;  
 import javafx.scene.Scene;  
 import javafx.scene.control.Button;
@@ -61,6 +61,13 @@ public class Tester extends Application {
             }
         }
         if(board.isGameOver){
+
+            for(int row = 0; row < 10; row++){
+                for(int col = 0; col < 10; col++){
+                    cells.get(row).get(col).setDisable(true);
+                }
+            }
+            
             System.out.println("Game Over");
             Text gameOverText = new Text();
             gameOverText.setText("GAME OVER!");
@@ -70,6 +77,7 @@ public class Tester extends Application {
             gameOverText.setFont(Font.font("Times New Roman",FontWeight.BOLD,60));
            
             group.getChildren().add(gameOverText);
+
             return;
         }
         if(board.minesCount + board.getOpenCellCount() == 100){
@@ -106,8 +114,17 @@ public class Tester extends Application {
     }
 
     public Group getGroup(int noOfMines){
-        
         group.getChildren().clear();
+
+
+        Text gameTitle = new Text();
+        gameTitle.setText("MINESWEEPER");
+        gameTitle.setX(100);
+        gameTitle.setY(40);
+        gameTitle.setFill(Color.BLACK);
+        gameTitle.setFont(Font.font("Times New Roman",FontWeight.BOLD,50));   
+        group.getChildren().add(gameTitle);
+
         flagButton.setStyle(null);
         openButton.setStyle("-fx-background-color: red;" + 
                                             "-fx-text-fill: white");
@@ -133,8 +150,10 @@ public class Tester extends Application {
                         int r = id / 10;
                         int c = id % 10;
                         if(board.isFlagMode == false){
-                            board.openCell(r, c);
-                            updateCellView();
+                            if(board.flagArray[r][c] != -1){
+                                board.openCell(r, c);
+                                updateCellView();
+                            }
                         }
                         else{
                             //board.setFlag(r, c);
@@ -205,10 +224,10 @@ public class Tester extends Application {
     public void reset(){
         Button resetButton = new Button();
         resetButton.setText("RESET");
-        resetButton.setMaxWidth(150);
+        resetButton.setMaxWidth(400);
         resetButton.setMaxHeight(30);
-        resetButton.setTranslateX(140);
-        resetButton.setTranslateY(20);
+        resetButton.setTranslateX(500);
+        resetButton.setTranslateY(45);
         resetButton.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent e) {
