@@ -18,7 +18,7 @@ import javafx.scene.input.MouseEvent;
 
 public class Tester extends Application {
 
-    private int leftPadding = 30, topPadding = 100;
+    private int leftPadding = 30, topPadding = 80;
     private List<List<Rectangle>> cells;
     private Board board;
     private Group group = new Group();
