@@ -1,4 +1,4 @@
-package mineSweeper;
+
 
 import java.util.*;
 
@@ -14,6 +14,7 @@ public class Board {
 	public boolean isFlagMode;
 
 	public int minesCount = 0;
+	public int noOfMines = 15;
 
 	public final int[] dx = {-1, -1, -1,  0,  0,  1,  1,  1};
 	public final int[] dy = {-1,  0,  1, -1,  1, -1,  0,  1};
@@ -113,7 +114,7 @@ public class Board {
 	public void generateRandomMines() {
 		// Generating 15 Random Mines
 		Random r = new Random();
-		for(int i = 0; i < 15; i++) {
+		for(int i = 0; i < noOfMines; i++) {
 			int num = r.nextInt(size * size);
 			int row = num / size;
 			int col = num % size;
