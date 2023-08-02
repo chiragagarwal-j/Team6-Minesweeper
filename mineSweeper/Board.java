@@ -8,15 +8,17 @@ public class Board {
 	public int[][] mineArray = new int[10][10];         // 1 = Mine, 0 = "No Mine"
 	public int[][] flagArray = new int[10][10];         // 0 = closed, 1 = open, -1 = flagged
 	public int[][] adjMinesCount = new int[10][10];
-	
+
+	public boolean isGameOver = false;
 	public boolean isFirstMove;    // Initially first move is set to true
 	public boolean isFlagMode;
+
+	public int minesCount = 0;
 
 	public final int[] dx = {-1, -1, -1,  0,  0,  1,  1,  1};
 	public final int[] dy = {-1,  0,  1, -1,  1, -1,  0,  1};
 	
 	public Board() {
-		
 		isFirstMove = true;
 		isFlagMode = false;
 	}
@@ -35,6 +37,7 @@ public class Board {
 
 	public void dfs(int row, int col){
 		if(mineArray[row][col] == 1){
+			isGameOver = true;
 			for(int r = 0; r < size; r++){
 				for(int c = 0; c < size; c++){
 					if(mineArray[r][c] == 1){
@@ -61,7 +64,27 @@ public class Board {
 
 
 	}
+
+	public void updateMinesCount(){
+		for(int row = 0; row < size; row++){
+			for(int col = 0; col < size; col++){
+				minesCount += mineArray[row][col];
+			}
+		}
+	}
 	
+
+	public int getOpenCellCount(){
+		int count = 0;
+		for(int row = 0; row < size; row++){
+			for(int col = 0; col < size; col++){
+				if(flagArray[row][col] == 1){
+					count += 1;
+				}
+			}
+		}
+		return count;
+	}
 	
 	
 	public void countAdjMines(){
@@ -110,6 +133,7 @@ public class Board {
 			}
 			countAdjMines();
 			dfs(row, col);
+			updateMinesCount();
 			return;
 		}
 		
