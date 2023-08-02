@@ -1,4 +1,4 @@
-package mineSweeper;
+
 import java.util.*;
 
 import javafx.application.Application;  
@@ -26,11 +26,14 @@ public class Tester extends Application {
     private Board board;
     private Group group = new Group();
     
+    
     int noOfMines=15;
     int totalNoOfFlags = 15;
 
     Button openButton = new Button();
     Button flagButton = new Button();
+    Text flagLeftTxt = new Text();
+    Text developeText = new Text();
 
     public void updateCellView(){
         for(int row = 0; row < 10; row++){
@@ -52,6 +55,8 @@ public class Tester extends Application {
                             Text txt = new Text();
                             txt.setText(String.valueOf(board.adjMinesCount[row][col]));
                             //System.out.println(board.adjMinesCount[row][col]);
+                            txt.setFill(Color.PURPLE);
+                            txt.setFont(Font.font("Times New Roman",FontWeight.BOLD,25));
                             txt.setX(cells.get(row).get(col).getX() + 20);
                             txt.setY(cells.get(row).get(col).getY() + 30);
                             group.getChildren().add(txt);
@@ -113,10 +118,24 @@ public class Tester extends Application {
         }
     }
 
+    public void displayFlagLeft(){
+        group.getChildren().remove(flagLeftTxt);
+        flagLeftTxt.setText("Flag Left - "+String.valueOf(totalNoOfFlags));
+                            //System.out.println(board.adjMinesCount[row][col]);
+        flagLeftTxt.setFill(Color.PURPLE);
+        flagLeftTxt.setFont(Font.font("Times New Roman",FontWeight.BOLD,20));
+        flagLeftTxt.setX(35);
+        flagLeftTxt.setY(62);
+        group.getChildren().add(flagLeftTxt);
+    }
+
     public Group getGroup(int noOfMines){
         group.getChildren().clear();
 
-
+        totalNoOfFlags = 15;
+        
+        developerDetails();
+        displayFlagLeft();
         Text gameTitle = new Text();
         gameTitle.setText("MINESWEEPER");
         gameTitle.setX(100);
@@ -161,6 +180,7 @@ public class Tester extends Application {
                                 addFlag(r,c);
                                // board.setFlag(r, c);
                                 totalNoOfFlags --;
+                                displayFlagLeft();
                             }
                         }
                     }
@@ -178,8 +198,9 @@ public class Tester extends Application {
         flagButton.setText(" FLAG MODE");
         flagButton.setMaxWidth(150);
         flagButton.setMaxHeight(30);
-        flagButton.setTranslateX(140);
-        flagButton.setTranslateY(610);
+        flagButton.setTranslateX(110);
+        flagButton.setTranslateY(605);
+        flagButton.setFont(Font.font("Times New Roman",FontWeight.BOLD,15));
         flagButton.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent e) {
@@ -199,8 +220,9 @@ public class Tester extends Application {
         openButton.setMaxWidth(180);
         openButton.setMaxHeight(40);
         openButton.setTranslateX(350);
-        openButton.setTranslateY(610);
-        
+        openButton.setTranslateY(605);
+        openButton.setFont(Font.font("Times New Roman",FontWeight.BOLD,15));
+
         openButton.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
                     @Override
                     public void handle(MouseEvent e) {
@@ -226,8 +248,10 @@ public class Tester extends Application {
         resetButton.setText("RESET");
         resetButton.setMaxWidth(400);
         resetButton.setMaxHeight(30);
-        resetButton.setTranslateX(500);
+        resetButton.setTranslateX(480);
         resetButton.setTranslateY(45);
+        resetButton.setFont(Font.font("Times New Roman",FontWeight.BOLD,15));
+
         resetButton.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent e) {
@@ -272,6 +296,17 @@ public class Tester extends Application {
         group.getChildren().add(difficulty);
     }
 
+    public void developerDetails(){
+        
+        developeText.setText("Developed by - Ankan, Bibhu, Chirag");
+                            //System.out.println(board.adjMinesCount[row][col]);
+        developeText.setFill(Color.PURPLE);
+        developeText.setFont(Font.font("Times New Roman",FontWeight.BOLD,15));
+        developeText.setX(5);
+        developeText.setY(645);
+        group.getChildren().add(developeText);
+    }
+
     public void start(Stage primaryStage) {
         getGroup(noOfMines);
 
@@ -280,6 +315,8 @@ public class Tester extends Application {
 
         Button openButton = openMode();
         group.getChildren().add(openButton);
+
+        
 
         reset();
         
