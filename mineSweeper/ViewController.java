@@ -1,16 +1,13 @@
 package mineSweeper;
 import java.util.*;
 
-import javafx.application.Application;  
-import javafx.event.ActionEvent;
+import javafx.application.Application;
 import javafx.event.EventHandler;  
 import javafx.scene.Scene;  
 import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
 import javafx.scene.effect.ImageInput;
 import javafx.scene.image.Image;
-import javafx.stage.Stage;  
-import javafx.scene.layout.StackPane;
+import javafx.stage.Stage;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
@@ -44,7 +41,6 @@ public class ViewController extends Application {
                         Image image2 = new Image("file:bomb.png", 50, 50, true, true);
                         ImageInput imageinput = new ImageInput();
                         imageinput.setSource(image2);
-                        //rect.setFill(Color.RED);
                         imageinput.setX(col * 52 + leftPadding);
                         imageinput.setY(row * 52 + topPadding);
                         cells.get(row).get(col).setEffect(imageinput);
@@ -54,7 +50,6 @@ public class ViewController extends Application {
                         if(board.adjMinesCount[row][col] > 0){
                             Text txt = new Text();
                             txt.setText(String.valueOf(board.adjMinesCount[row][col]));
-                            //System.out.println(board.adjMinesCount[row][col]);
                             txt.setFill(Color.PURPLE);
                             txt.setFont(Font.font("Times New Roman",FontWeight.BOLD,25));
                             txt.setX(cells.get(row).get(col).getX() + 20);
@@ -99,20 +94,17 @@ public class ViewController extends Application {
     }
 
     public void addFlag(int row , int col){
-        Image image2 = new Image("file:flag.png", 50, 50, true, true);
+        Image image2 = new Image("file:flag2.png", 50, 50, true, true);
         ImageInput imageinput = new ImageInput();
         if(board.flagArray[row][col] == 0){
             board.flagArray[row][col] = -1;
             totalNoOfFlags -= 1;
-            //cells.get(row).get(col).setFill(Color.RED);
             imageinput.setSource(image2);
             imageinput.setX(col * 52 + leftPadding);
             imageinput.setY(row * 52 + topPadding);
             cells.get(row).get(col).setEffect(imageinput);
 
         }
-
-        // unable to access the block once marked as flag
         else if(board.flagArray[row][col] == -1){
             
             cells.get(row).get(col).setEffect(null);
@@ -124,7 +116,6 @@ public class ViewController extends Application {
     public void displayFlagLeft(){
         group.getChildren().remove(flagLeftTxt);
         flagLeftTxt.setText("Flag Left - "+String.valueOf(totalNoOfFlags));
-                            //System.out.println(board.adjMinesCount[row][col]);
         flagLeftTxt.setFill(Color.PURPLE);
         flagLeftTxt.setFont(Font.font("Times New Roman",FontWeight.BOLD,20));
         flagLeftTxt.setX(35);
@@ -178,10 +169,8 @@ public class ViewController extends Application {
                             }
                         }
                         else{
-                            //board.setFlag(r, c);
                             if(totalNoOfFlags > 0){
                                 addFlag(r,c);
-                               // board.setFlag(r, c);
                                 displayFlagLeft();
                             }
                         }
@@ -233,12 +222,6 @@ public class ViewController extends Application {
                         flagButton.setStyle(null);
                         if(board.isFlagMode == true){
                             board.isFlagMode = false;
-                            //board.isOpenMode = true;
-                            //updateCellView(group);
-                        }
-                        else{
-                           // board.isFlagMode = false;
-                           // board.isOpenMode = false;
                         }
                     }
                 });
@@ -262,8 +245,6 @@ public class ViewController extends Application {
                 group.getChildren().add(flagButton);
                 Button openButton = openMode();
                 group.getChildren().add(openButton);
-
-               // setDifficulty();
                 reset();
                 
             }
@@ -294,6 +275,7 @@ public class ViewController extends Application {
 
         reset();
         primaryStage.setResizable(false);
+        primaryStage.setTitle("MINESWEEPER");
         Scene scene = new Scene(group,580,650);
         scene.setFill(Color.AQUA);
         
