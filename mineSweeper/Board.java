@@ -1,5 +1,4 @@
-
-
+package mineSweeper;
 import java.util.*;
 
 public class Board {
