@@ -1,9 +1,11 @@
 package mineSweeper;
+
+import java.sql.SQLException;
 import java.util.*;
 
 import javafx.application.Application;
-import javafx.event.EventHandler;  
-import javafx.scene.Scene;  
+import javafx.event.EventHandler;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.effect.ImageInput;
 import javafx.scene.image.Image;
@@ -12,279 +14,292 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
-import javafx.scene.paint.Color; 
+import javafx.scene.paint.Color;
 import javafx.scene.Group;
 import javafx.scene.input.MouseEvent;
 
 public class ViewController extends Application {
 
-    private int leftPadding = 30, topPadding = 70;
-    private List<List<Rectangle>> cells;
-    private Board board;
-    private Group group = new Group();
-    
-    
-    int noOfMines=15;
-    int totalNoOfFlags = 15;
+	private int leftPadding = 30, topPadding = 70;
+	private List<List<Rectangle>> cells;
+	private Board board;
+	private Group group = new Group();
 
-    Button openButton = new Button();
-    Button flagButton = new Button();
-    Text flagLeftTxt = new Text();
-    Text developeText = new Text();
+	int noOfMines = 15;
+	int totalNoOfFlags = 15;
 
-    public void updateCellView(){
-        for(int row = 0; row < 10; row++){
-            for(int col = 0; col < 10; col++){
-                if(board.flagArray[row][col] == 1){
-                    if(board.mineArray[row][col] == 1){
-                        cells.get(row).get(col).setFill(Color.RED);
-                        Image image2 = new Image("file:bomb.png", 50, 50, true, true);
-                        ImageInput imageinput = new ImageInput();
-                        imageinput.setSource(image2);
-                        imageinput.setX(col * 52 + leftPadding);
-                        imageinput.setY(row * 52 + topPadding);
-                        cells.get(row).get(col).setEffect(imageinput);
-                    }
-                    else{
-                        cells.get(row).get(col).setFill(Color.GREEN);
-                        if(board.adjMinesCount[row][col] > 0){
-                            Text txt = new Text();
-                            txt.setText(String.valueOf(board.adjMinesCount[row][col]));
-                            txt.setFill(Color.PURPLE);
-                            txt.setFont(Font.font("Times New Roman",FontWeight.BOLD,25));
-                            txt.setX(cells.get(row).get(col).getX() + 20);
-                            txt.setY(cells.get(row).get(col).getY() + 30);
-                            group.getChildren().add(txt);
-                        }
-                    }
-                }
-            }
-        }
-        if(board.isGameOver){
+	Button openButton = new Button();
+	Button flagButton = new Button();
+	Text flagLeftTxt = new Text();
+	Text developeText = new Text();
 
-            for(int row = 0; row < 10; row++){
-                for(int col = 0; col < 10; col++){
-                    cells.get(row).get(col).setDisable(true);
-                }
-            }
-            
-            System.out.println("Game Over");
-            Text gameOverText = new Text();
-            gameOverText.setText("GAME OVER!");
-            gameOverText.setX(95);
-            gameOverText.setY(332);
-            gameOverText.setFill(Color.RED);
-            gameOverText.setFont(Font.font("Times New Roman",FontWeight.BOLD,60));
-           
-            group.getChildren().add(gameOverText);
+	public void updateCellView() {
+		for (int row = 0; row < 10; row++) {
+			for (int col = 0; col < 10; col++) {
+				if (board.flagArray[row][col] == 1) {
+					if (board.mineArray[row][col] == 1) {
+						cells.get(row).get(col).setFill(Color.RED);
+						Image image2 = new Image("file:mine.gif", 50, 50, true, true);
+						ImageInput imageinput = new ImageInput();
+						imageinput.setSource(image2);
+						imageinput.setX(col * 52 + leftPadding);
+						imageinput.setY(row * 52 + topPadding);
+						cells.get(row).get(col).setEffect(imageinput);
+					} else {
+						cells.get(row).get(col).setFill(Color.GREEN);
+						if (board.adjMinesCount[row][col] > 0) {
+							Text txt = new Text();
+							txt.setText(String.valueOf(board.adjMinesCount[row][col]));
+							txt.setFill(Color.PURPLE);
+							txt.setFont(Font.font("Times New Roman", FontWeight.BOLD, 25));
+							txt.setX(cells.get(row).get(col).getX() + 20);
+							txt.setY(cells.get(row).get(col).getY() + 30);
+							group.getChildren().add(txt);
+						}
+					}
+				}
+			}
+		}
+		if (board.isGameOver) {
+			try {
+				board.db.initialiseDB("DELETE FROM GameData");
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			for (int row = 0; row < 10; row++) {
+				for (int col = 0; col < 10; col++) {
+					cells.get(row).get(col).setDisable(true);
+				}
+			}
 
-            return;
-        }
-        if(board.minesCount + board.getOpenCellCount() == 100){
-            System.out.println("You Win!");
-            Text youWinText = new Text();
-            youWinText.setText("YOU WIN!!!");
-            youWinText.setX(115);
-            youWinText.setY(332);
-            youWinText.setFill(Color.BLACK);
-            youWinText.setFont(Font.font("Times New Roman",FontWeight.BOLD,60));
-           
-            group.getChildren().add(youWinText);
-        }
-    }
+			System.out.println("Game Over");
+			Text gameOverText = new Text();
+			gameOverText.setText("GAME OVER!");
+			gameOverText.setX(95);
+			gameOverText.setY(332);
+			gameOverText.setFill(Color.RED);
+			gameOverText.setFont(Font.font("Times New Roman", FontWeight.BOLD, 60));
 
-    public void addFlag(int row , int col){
-        Image image2 = new Image("file:flag2.png", 50, 50, true, true);
-        ImageInput imageinput = new ImageInput();
-        if(board.flagArray[row][col] == 0){
-            board.flagArray[row][col] = -1;
-            totalNoOfFlags -= 1;
-            imageinput.setSource(image2);
-            imageinput.setX(col * 52 + leftPadding);
-            imageinput.setY(row * 52 + topPadding);
-            cells.get(row).get(col).setEffect(imageinput);
+			group.getChildren().add(gameOverText);
 
-        }
-        else if(board.flagArray[row][col] == -1){
-            
-            cells.get(row).get(col).setEffect(null);
-            board.flagArray[row][col] = 0;
-            totalNoOfFlags += 1;
-        }
-    }
+			return;
+		}
+		if (board.minesCount + board.getOpenCellCount() == 100) {
+			try {
+				board.db.initialiseDB("DELETE FROM GameData");
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			System.out.println("You Win!");
+			Text youWinText = new Text();
+			youWinText.setText("YOU WIN!!!");
+			youWinText.setX(115);
+			youWinText.setY(332);
+			youWinText.setFill(Color.BLACK);
+			youWinText.setFont(Font.font("Times New Roman", FontWeight.BOLD, 60));
 
-    public void displayFlagLeft(){
-        group.getChildren().remove(flagLeftTxt);
-        flagLeftTxt.setText("Flag Left - "+String.valueOf(totalNoOfFlags));
-        flagLeftTxt.setFill(Color.PURPLE);
-        flagLeftTxt.setFont(Font.font("Times New Roman",FontWeight.BOLD,20));
-        flagLeftTxt.setX(35);
-        flagLeftTxt.setY(62);
-        group.getChildren().add(flagLeftTxt);
-    }
+			group.getChildren().add(youWinText);
+		}
+	}
 
-    public Group getGroup(int noOfMines){
-        group.getChildren().clear();
+	public void addFlag(int row, int col) {
+		Image image2 = new Image("file:flag2.png", 50, 50, true, true);
+		ImageInput imageinput = new ImageInput();
+		if (board.flagArray[row][col] == 0) {
+			board.flagArray[row][col] = -1;
+			try {
+				board.db.saveGame("UPDATE GameData SET flag_status=-1 WHERE row_no="+row+" and col_no="+col+";");
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			totalNoOfFlags -= 1;
+			imageinput.setSource(image2);
+			imageinput.setX(col * 52 + leftPadding);
+			imageinput.setY(row * 52 + topPadding);
+			cells.get(row).get(col).setEffect(imageinput);
 
-        totalNoOfFlags = 15;
-        
-        developerDetails();
-        displayFlagLeft();
-        Text gameTitle = new Text();
-        gameTitle.setText("MINESWEEPER");
-        gameTitle.setX(125);
-        gameTitle.setY(35);
-        gameTitle.setFill(Color.BLACK);
-        gameTitle.setFont(Font.font("Times New Roman",FontWeight.BOLD,40));   
-        group.getChildren().add(gameTitle);
+		} else if (board.flagArray[row][col] == -1) {
 
-        flagButton.setStyle(null);
-        openButton.setStyle("-fx-background-color: red;" + 
-                                            "-fx-text-fill: white");
-        board = new Board();
-        cells = new ArrayList<>();
-        board.noOfMines = noOfMines;
-        for(int row = 0; row < 10; row++){
-            List<Rectangle> rectRow = new ArrayList<>();
-            for(int col = 0; col < 10; col++){
-                System.out.println();
-                Rectangle rect = new Rectangle();
-                rect.setX(col * 52 + leftPadding);
-                rect.setY(row * 52 + topPadding);
-                rect.setWidth(50);
-                rect.setHeight(50);
-                rect.setFill(Color.GREY);
-                
-                rect.setId(String.valueOf(row * 10 + col));
-                rect.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
-                    @Override
-                    public void handle(MouseEvent e) {
-                        int id = Integer.valueOf(rect.getId());
-                        int r = id / 10;
-                        int c = id % 10;
-                        if(board.isFlagMode == false){
-                            if(board.flagArray[r][c] != -1){
-                                board.openCell(r, c);
-                                updateCellView();
-                            }
-                        }
-                        else{
-                            if(totalNoOfFlags > 0){
-                                addFlag(r,c);
-                                displayFlagLeft();
-                            }
-                        }
-                    }
-                });
-                rectRow.add(rect);
-                group.getChildren().addAll(rect);
-            }
-            cells.add(rectRow);
-        }
+			cells.get(row).get(col).setEffect(null);
+			board.flagArray[row][col] = 0;
+			totalNoOfFlags += 1;
+		}
+	}
 
-        return group;
-    }
+	public void displayFlagLeft() {
+		group.getChildren().remove(flagLeftTxt);
+		flagLeftTxt.setText("Flag Left - " + String.valueOf(totalNoOfFlags));
+		flagLeftTxt.setFill(Color.PURPLE);
+		flagLeftTxt.setFont(Font.font("Times New Roman", FontWeight.BOLD, 20));
+		flagLeftTxt.setX(35);
+		flagLeftTxt.setY(62);
+		group.getChildren().add(flagLeftTxt);
+	}
 
-    public Button flagMode(){
-        flagButton.setText(" FLAG MODE");
-        flagButton.setMaxWidth(150);
-        flagButton.setMaxHeight(30);
-        flagButton.setTranslateX(110);
-        flagButton.setTranslateY(595);
-        flagButton.setFont(Font.font("Times New Roman",FontWeight.BOLD,15));
-        flagButton.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent e) {
-                flagButton.setStyle("-fx-background-color: red;" + 
-                                            "-fx-text-fill: white");
-                openButton.setStyle(null);
-                if(board.isFlagMode == false){
-                    board.isFlagMode = true;
-                }
-            }
-        });
-        return flagButton;
-    }
+	public Group getGroup(int noOfMines) {
+		group.getChildren().clear();
 
-    public Button openMode(){
-        openButton.setText(" OPEN MODE");
-        openButton.setMaxWidth(180);
-        openButton.setMaxHeight(40);
-        openButton.setTranslateX(350);
-        openButton.setTranslateY(595);
-        openButton.setFont(Font.font("Times New Roman",FontWeight.BOLD,15));
+		totalNoOfFlags = 15;
 
-        openButton.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
-                    @Override
-                    public void handle(MouseEvent e) {
-                        openButton.setStyle("-fx-background-color: red;" + 
-                                            "-fx-text-fill: white");
-                        flagButton.setStyle(null);
-                        if(board.isFlagMode == true){
-                            board.isFlagMode = false;
-                        }
-                    }
-                });
-        return openButton;
-    }
+		developerDetails();
+		displayFlagLeft();
+		Text gameTitle = new Text();
+		gameTitle.setText("MINESWEEPER");
+		gameTitle.setX(125);
+		gameTitle.setY(35);
+		gameTitle.setFill(Color.BLACK);
+		gameTitle.setFont(Font.font("Times New Roman", FontWeight.BOLD, 40));
+		group.getChildren().add(gameTitle);
 
-    public void reset(){
-        Button resetButton = new Button();
-        resetButton.setText("RESET");
-        resetButton.setMaxWidth(400);
-        resetButton.setMaxHeight(30);
-        resetButton.setTranslateX(480);
-        resetButton.setTranslateY(35);
-        resetButton.setFont(Font.font("Times New Roman",FontWeight.BOLD,15));
+		flagButton.setStyle(null);
+		openButton.setStyle("-fx-background-color: red;" + "-fx-text-fill: white");
+		board = new Board();
+		
+		cells = new ArrayList<>();
+		board.noOfMines = noOfMines;
+		for (int row = 0; row < 10; row++) {
+			List<Rectangle> rectRow = new ArrayList<>();
+			for (int col = 0; col < 10; col++) {
+				System.out.println();
+				Rectangle rect = new Rectangle();
+				rect.setX(col * 52 + leftPadding);
+				rect.setY(row * 52 + topPadding);
+				rect.setWidth(50);
+				rect.setHeight(50);
+				rect.setFill(Color.GREY);
 
-        resetButton.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent e) {
-                getGroup(noOfMines);
-                Button flagButton = flagMode();
-                group.getChildren().add(flagButton);
-                Button openButton = openMode();
-                group.getChildren().add(openButton);
-                reset();
-                
-            }
-        });
-        group.getChildren().add(resetButton);
-    }
+				rect.setId(String.valueOf(row * 10 + col));
+				rect.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
+					@Override
+					public void handle(MouseEvent e) {
+						int id = Integer.valueOf(rect.getId());
+						int r = id / 10;
+						int c = id % 10;
+						if (board.isFlagMode == false) {
+							if (board.flagArray[r][c] != -1) {
+								try {
+									board.openCell(r, c);
+								} catch (SQLException e1) {
+									e1.printStackTrace();
+								}
+								updateCellView();
+							}
+						} else {
+							if (totalNoOfFlags > 0) {
+								addFlag(r, c);
+								displayFlagLeft();
+							}
+						}
+					}
+				});
+				rectRow.add(rect);
+				group.getChildren().addAll(rect);
+			}
+			cells.add(rectRow);
+		}
+		updateCellView();
+		return group;
+	}
 
-    public void developerDetails(){
-        
-        developeText.setText("Developed by: Ankan, Bibhu, Chirag");
-        developeText.setFill(Color.PURPLE);
-        developeText.setFont(Font.font("Times New Roman",FontWeight.BOLD,15));
-        developeText.setX(5);
-        developeText.setY(640);
-        group.getChildren().add(developeText);
-    }
+	public Button flagMode() {
+		flagButton.setText(" FLAG MODE");
+		flagButton.setMaxWidth(150);
+		flagButton.setMaxHeight(30);
+		flagButton.setTranslateX(110);
+		flagButton.setTranslateY(595);
+		flagButton.setFont(Font.font("Times New Roman", FontWeight.BOLD, 15));
+		flagButton.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent e) {
+				flagButton.setStyle("-fx-background-color: red;" + "-fx-text-fill: white");
+				openButton.setStyle(null);
+				if (board.isFlagMode == false) {
+					board.isFlagMode = true;
+				}
+			}
+		});
+		return flagButton;
+	}
 
-    public void start(Stage primaryStage) {
-        getGroup(noOfMines);
+	public Button openMode() {
+		openButton.setText(" OPEN MODE");
+		openButton.setMaxWidth(180);
+		openButton.setMaxHeight(40);
+		openButton.setTranslateX(350);
+		openButton.setTranslateY(595);
+		openButton.setFont(Font.font("Times New Roman", FontWeight.BOLD, 15));
 
-        Button flagButton = flagMode();
-        group.getChildren().add(flagButton);
+		openButton.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent e) {
+				openButton.setStyle("-fx-background-color: red;" + "-fx-text-fill: white");
+				flagButton.setStyle(null);
+				if (board.isFlagMode == true) {
+					board.isFlagMode = false;
+				}
+			}
+		});
+		return openButton;
+	}
 
-        Button openButton = openMode();
-        group.getChildren().add(openButton);
+	public void reset() {
+		Button resetButton = new Button();
+		resetButton.setText("RESET");
+		resetButton.setMaxWidth(400);
+		resetButton.setMaxHeight(30);
+		resetButton.setTranslateX(480);
+		resetButton.setTranslateY(35);
+		resetButton.setFont(Font.font("Times New Roman", FontWeight.BOLD, 15));
+		try {
+			board.db.initialiseDB("DELETE FROM GameData");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		resetButton.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent e) {
+				getGroup(noOfMines);
+				Button flagButton = flagMode();
+				group.getChildren().add(flagButton);
+				Button openButton = openMode();
+				group.getChildren().add(openButton);
+				reset();
 
-        
+			}
+		});
+		group.getChildren().add(resetButton);
+	}
 
-        reset();
-        primaryStage.setResizable(false);
-        primaryStage.setTitle("MINESWEEPER");
-        Scene scene = new Scene(group,580,650);
-        scene.setFill(Color.AQUA);
-        
-        primaryStage.setScene(scene); 
-        primaryStage.show();
-    }
+	public void developerDetails() {
 
+		developeText.setText("Developed by: Ankan, Bibhu, Chirag");
+		developeText.setFill(Color.PURPLE);
+		developeText.setFont(Font.font("Times New Roman", FontWeight.BOLD, 15));
+		developeText.setX(5);
+		developeText.setY(640);
+		group.getChildren().add(developeText);
+	}
 
-    public static void main(String[] args) {
-        launch(args); 
-    }
+	public void start(Stage primaryStage) {
+		getGroup(noOfMines);
+
+		Button flagButton = flagMode();
+		group.getChildren().add(flagButton);
+
+		Button openButton = openMode();
+		group.getChildren().add(openButton);
+
+		reset();
+		primaryStage.setResizable(false);
+		primaryStage.setTitle("MINESWEEPER");
+		Scene scene = new Scene(group, 580, 650);
+		scene.setFill(Color.AQUA);
+
+		primaryStage.setScene(scene);
+		primaryStage.show();
+	}
+
+	public static void main(String[] args) {
+		launch(args);
+	}
 }
